@@ -280,6 +280,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Updating a tag
+     */
+    public int updateTag(Tag tag) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_TAG_NAME, tag.getTagName());
+
+        // updating row
+        return db.update(TABLE_TAG, values, KEY_ID + " = ?", new String[] { String.valueOf(tag.getId()) });
+    }
+
+    /**
      * get datetime
      */
     private String getDateTime() {
