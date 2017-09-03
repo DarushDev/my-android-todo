@@ -314,6 +314,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_TAG, KEY_ID + " = ?", new String[] { String.valueOf(tag.getId()) });
     }
 
+    /*
+     * Updating a todo tag
+     */
+    public int updateNoteTag(long id, long tag_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_TAG_ID, tag_id);
+
+        // updating row
+        return db.update(TABLE_TODO, values, KEY_ID + " = ?", new String[] { String.valueOf(id) });
+    }
+
+    /**
+     * Deleting a todo tag
+     */
+    public void deleteToDoTag(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_TODO, KEY_ID + " = ?", new String[] { String.valueOf(id) });
+    }
+
+    /**
+     * getting todo count
+     */
+    public int getToDoCount() {
+        String countQuery = "SELECT  * FROM " + TABLE_TODO;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        int count = cursor.getCount();
+        cursor.close();
+
+        // return count
+        return count;
+    }
+
+    // closing database
+    public void closeDB() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db != null && db.isOpen())
+            db.close();
+    }
+
     /**
      * get datetime
      */
