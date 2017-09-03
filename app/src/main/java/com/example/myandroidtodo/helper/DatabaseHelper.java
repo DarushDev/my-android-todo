@@ -1,8 +1,15 @@
 package com.example.myandroidtodo.helper;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.myandroidtodo.model.Todo;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -75,6 +82,53 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // create new tables
         onCreate(db);
+    }
+
+    /*
+     * Creating a todo
+     */
+    public long createToDo(Todo todo, long[] tag_ids) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_TODO, todo.getNote());
+        values.put(KEY_STATUS, todo.getStatus());
+        values.put(KEY_CREATED_AT, getDateTime());
+
+        // insert row
+        long todo_id = db.insert(TABLE_TODO, null, values);
+
+        // assigning tags to todo
+        for (long tag_id : tag_ids) {
+            createTodoTag(todo_id, tag_id);
+        }
+
+        return todo_id;
+    }
+
+    /*
+     * Creating todo_tag
+     */
+    public long createTodoTag(long todo_id, long tag_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_TODO_ID, todo_id);
+        values.put(KEY_TAG_ID, tag_id);
+        values.put(KEY_CREATED_AT, getDateTime());
+
+        long id = db.insert(TABLE_TODO_TAG, null, values);
+
+        return id;
+    }
+
+    /**
+     * get datetime
+     */
+    private String getDateTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date date = new Date();
+        return dateFormat.format(date);
     }
 
 }
