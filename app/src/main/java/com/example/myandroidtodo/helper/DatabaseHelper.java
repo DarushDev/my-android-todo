@@ -227,6 +227,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.update(TABLE_TODO, values, KEY_ID + " = ?", new String[] { String.valueOf(todo.getId()) });
     }
 
+    /*
+     * Deleting a todo
+     */
+    public void deleteToDo(long tado_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_TODO, KEY_ID + " = ?", new String[] { String.valueOf(tado_id) });
+    }
+
     /**
      * get datetime
      */
