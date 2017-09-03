@@ -253,6 +253,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * getting all tags
+     * */
+    public List<Tag> getAllTags() {
+        List<Tag> tags = new ArrayList<Tag>();
+        String selectQuery = "SELECT  * FROM " + TABLE_TAG;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Tag t = new Tag();
+                t.setId(c.getInt((c.getColumnIndex(KEY_ID))));
+                t.setTagName(c.getString(c.getColumnIndex(KEY_TAG_NAME)));
+
+                // adding to tags list
+                tags.add(t);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return tags;
+    }
+
+    /**
      * get datetime
      */
     private String getDateTime() {
