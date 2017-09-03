@@ -179,6 +179,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return todos;
     }
 
+    /*
+     * getting all todos under single tag
+     * */
+    public List<Todo> getAllToDosByTag(String tag_name) {
+        List<Todo> todos = new ArrayList<Todo>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_TODO + " td, "
+                + TABLE_TAG + " tg, " + TABLE_TODO_TAG + " tt WHERE tg."
+                + KEY_TAG_NAME + " = '" + tag_name + "'" + " AND tg." + KEY_ID
+                + " = " + "tt." + KEY_TAG_ID + " AND td." + KEY_ID + " = "
+                + "tt." + KEY_TODO_ID;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Todo td = new Todo();
+                td.setId(c.getInt((c.getColumnIndex(KEY_ID))));
+                td.setNote((c.getString(c.getColumnIndex(KEY_TODO))));
+                td.setCreatedAt(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
+
+                // adding to todo list
+                todos.add(td);
+            } while (c.moveToNext());
+        }
+        c.close();
+
+        return todos;
+    }
+
     /**
      * get datetime
      */
