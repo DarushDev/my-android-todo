@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.myandroidtodo.model.Tag;
 import com.example.myandroidtodo.model.Todo;
 
 import java.text.SimpleDateFormat;
@@ -233,6 +234,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void deleteToDo(long tado_id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_TODO, KEY_ID + " = ?", new String[] { String.valueOf(tado_id) });
+    }
+
+    /*
+     * Creating tag
+     */
+    public long createTag(Tag tag) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_TAG_NAME, tag.getTagName());
+        values.put(KEY_CREATED_AT, getDateTime());
+
+        // insert row
+        long tag_id = db.insert(TABLE_TAG, null, values);
+
+        return tag_id;
     }
 
     /**
