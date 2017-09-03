@@ -292,6 +292,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.update(TABLE_TAG, values, KEY_ID + " = ?", new String[] { String.valueOf(tag.getId()) });
     }
 
+    /*
+     * Deleting a tag
+     */
+    public void deleteTag(Tag tag, boolean should_delete_all_tag_todos) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // before deleting tag check if todos under this tag should also be deleted
+        if (should_delete_all_tag_todos) {
+            // get all todos under this tag
+            List<Todo> allTagToDos = getAllToDosByTag(tag.getTagName());
+
+            // delete all todos
+            for (Todo todo : allTagToDos) {
+                // delete todo
+                deleteToDo(todo.getId());
+            }
+        }
+
+        // now delete the tag
+        db.delete(TABLE_TAG, KEY_ID + " = ?", new String[] { String.valueOf(tag.getId()) });
+    }
+
     /**
      * get datetime
      */
