@@ -10,7 +10,9 @@ import android.util.Log;
 import com.example.myandroidtodo.model.Todo;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -144,8 +146,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         td.setId(c.getInt(c.getColumnIndex(KEY_ID)));
         td.setNote((c.getString(c.getColumnIndex(KEY_TODO))));
         td.setCreatedAt(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
-
+        c.close();
         return td;
+    }
+
+    /**
+     * getting all todos
+     * */
+    public List<Todo> getAllToDos() {
+        List<Todo> todos = new ArrayList<Todo>();
+        String selectQuery = "SELECT  * FROM " + TABLE_TODO;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Todo td = new Todo();
+                td.setId(c.getInt((c.getColumnIndex(KEY_ID))));
+                td.setNote((c.getString(c.getColumnIndex(KEY_TODO))));
+                td.setCreatedAt(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
+
+                // adding to todo list
+                todos.add(td);
+            } while (c.moveToNext());
+        }
+        c.close();
+
+        return todos;
     }
 
     /**
