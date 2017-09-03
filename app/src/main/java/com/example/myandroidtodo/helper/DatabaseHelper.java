@@ -213,6 +213,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return todos;
     }
 
+    /*
+     * Updating a todo
+     */
+    public int updateToDo(Todo todo) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_TODO, todo.getNote());
+        values.put(KEY_STATUS, todo.getStatus());
+
+        // updating row
+        return db.update(TABLE_TODO, values, KEY_ID + " = ?", new String[] { String.valueOf(todo.getId()) });
+    }
+
     /**
      * get datetime
      */
