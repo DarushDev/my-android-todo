@@ -2,8 +2,10 @@ package com.example.myandroidtodo.helper;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.myandroidtodo.model.Todo;
 
@@ -120,6 +122,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long id = db.insert(TABLE_TODO_TAG, null, values);
 
         return id;
+    }
+
+    /**
+     * get single todo
+     */
+    public Todo getTodo(long todo_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_TODO + " WHERE "
+                + KEY_ID + " = " + todo_id;
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        Todo td = new Todo();
+        td.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+        td.setNote((c.getString(c.getColumnIndex(KEY_TODO))));
+        td.setCreatedAt(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
+
+        return td;
     }
 
     /**
